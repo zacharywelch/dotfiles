@@ -19,9 +19,10 @@ truncate_to_repo = false
 [git_branch]
 style = "green"
 symbol = "🌱 "
+format = "[$symbol$branch]($style) "
 
 [git_status]
-style = "red"
+style = "yellow"
 ahead = "↑${count}"
 behind = "↓${count}"
 
