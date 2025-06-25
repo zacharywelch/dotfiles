@@ -1,0 +1,50 @@
+# Simple, clean format
+format = """
+$directory\
+$git_branch\
+$git_status\
+$ruby\
+$nodejs\
+$docker_context\
+$cmd_duration\
+$line_break\
+$character
+"""
+
+[directory]
+style = "bold"
+truncation_length = 3
+truncate_to_repo = false
+
+[git_branch]
+style = "green"
+symbol = "🌱 "
+
+[git_status]
+style = "red"
+ahead = "↑${count}"
+behind = "↓${count}"
+
+[ruby]
+style = "red"
+symbol = "💎 "
+format = "[$symbol($version)]($style) "
+
+[nodejs]
+style = "green"
+symbol = "⬢ "
+format = "[$symbol($version)]($style) "
+
+[docker_context]
+style = "blue"
+symbol = "🐳 "
+format = "[$symbol$context]($style) "
+
+[cmd_duration]
+min_time = 2_000  # Show if command takes longer than 2 seconds
+format = "took [$duration]($style) "
+style = "yellow bold"
+
+[character]
+success_symbol = '[➜](bold green)'
+error_symbol = '[➜](bold red)'
