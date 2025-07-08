@@ -11,9 +11,20 @@ if ! command -v brew &> /dev/null; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# Install all packages from Brewfile
+echo "Installing packages from Brewfile..."
+brew bundle install
+
 # Link dotfiles
 echo "Linking dotfiles..."
 ln -sf ~/dotfiles/.zshrc ~/.zshrc
 ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
 
+# Start services
+echo "Starting services..."
+brew services start postgresql@16
+brew services start opensearch
+
 echo "✅ Setup complete! Restart your terminal."
+echo "💡 Don't forget to configure asdf plugins if you use them"
+echo "💡 Import terminal profile from ~/dotfiles/terminal/Default.terminal manually"
