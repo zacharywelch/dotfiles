@@ -21,7 +21,7 @@ if brew list | grep -q postgresql; then
   sed -i '' '/postgresql/d' Brewfile.temp
 fi
 
-# Remove OpenSearch if already installed or if Elasticsearch is running
+# Remove OpenSearch if already installed or if port 9200 is in use
 if brew list | grep -q opensearch || lsof -i :9200 &>/dev/null; then
   echo "OpenSearch/Elasticsearch already running on port 9200, skipping OpenSearch..."
   sed -i '' '/opensearch/d' Brewfile.temp
@@ -51,12 +51,12 @@ if command -v asdf &>/dev/null; then
     asdf plugin add ruby
   fi
   
-  # Only install Ruby if not already available
-  if ! command -v ruby &>/dev/null || ! ruby --version | grep -q "3.1.6"; then
+  # Only install Ruby if not already available via asdf
+  if ! asdf current ruby &>/dev/null; then
     echo "Installing Ruby 3.1.6 via asdf..."
     asdf install ruby 3.1.6
   else
-    echo "Ruby already installed, skipping asdf Ruby installation"
+    echo "Ruby already managed by asdf, skipping installation"
   fi
 fi
 
@@ -70,7 +70,7 @@ else
   echo "Port 5432 already in use, skipping PostgreSQL startup"
 fi
 
-# Only start OpenSearch if port 9200 is free
+# Only start OpenSearch if port 9200 is free AND it's installed
 if ! lsof -i :9200 &>/dev/null; then
   if brew list | grep -q opensearch; then
     echo "Starting opensearch..."
