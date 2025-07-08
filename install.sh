@@ -11,9 +11,26 @@ if ! command -v brew &> /dev/null; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# Install all packages from Brewfile
-echo "Installing packages from Brewfile..."
-brew bundle install
+# Check what's already installed and remove from Brewfile temporarily
+echo "Checking for existing installations..."
+cp Brewfile Brewfile.temp
+
+# Remove PostgreSQL if already installed
+if brew list | grep -q postgresql; then
+  echo "PostgreSQL already installed, skipping..."
+  sed -i '' '/postgresql/d' Brewfile.temp
+fi
+
+# Remove OpenSearch if already installed or if Elasticsearch is running
+if brew list | grep -q opensearch || lsof -i :9200 &>/dev/null; then
+  echo "OpenSearch/Elasticsearch already running on port 9200, skipping OpenSearch..."
+  sed -i '' '/opensearch/d' Brewfile.temp
+fi
+
+# Install remaining packages
+echo "Installing packages..."
+brew bundle install --file=Brewfile.temp --no-upgrade
+rm Brewfile.temp
 
 # Link dotfiles
 echo "Linking dotfiles..."
@@ -25,15 +42,34 @@ echo "Setting up colima..."
 mkdir -p ~/.colima/default
 ln -sf ~/dotfiles/colima/colima.yaml ~/.colima/default/colima.yaml
 
-# Start services
-echo "Starting services..."
-brew services start postgresql@16
-brew services start opensearch
+# Only start PostgreSQL if port 5432 is free
+if ! lsof -i :5432 &>/dev/null; then
+  if brew list | grep -q postgresql@16; then
+    echo "Starting postgresql@16..."
+    brew services start postgresql@16
+  fi
+else
+  echo "Port 5432 already in use, skipping PostgreSQL startup"
+fi
 
-# Start colima with your settings
-echo "Starting colima..."
-colima start
+# Only start OpenSearch if port 9200 is free
+if ! lsof -i :9200 &>/dev/null; then
+  if brew list | grep -q opensearch; then
+    echo "Starting opensearch..."
+    brew services start opensearch
+  fi
+else
+  echo "Port 9200 already in use, skipping OpenSearch startup"
+fi
 
-echo "✅ Setup complete! Restart your terminal."
+# Start colima if not running
+if ! colima status &>/dev/null; then
+  echo "Starting colima..."
+  colima start
+else
+  echo "Colima already running"
+fi
+
+echo "✅ Setup complete!"
 echo "💡 Don't forget to configure asdf plugins if you use them"
 echo "💡 Import terminal profile from ~/dotfiles/terminal/Default.terminal manually"
