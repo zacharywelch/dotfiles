@@ -20,10 +20,19 @@ echo "Linking dotfiles..."
 ln -sf ~/dotfiles/.zshrc ~/.zshrc
 ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
 
+# Setup colima config
+echo "Setting up colima..."
+mkdir -p ~/.colima/default
+ln -sf ~/dotfiles/colima/colima.yaml ~/.colima/default/colima.yaml
+
 # Start services
 echo "Starting services..."
 brew services start postgresql@16
 brew services start opensearch
+
+# Start colima with your settings
+echo "Starting colima..."
+colima start
 
 echo "✅ Setup complete! Restart your terminal."
 echo "💡 Don't forget to configure asdf plugins if you use them"
