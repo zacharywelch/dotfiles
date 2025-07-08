@@ -7,7 +7,6 @@ brew "pkgconf"
 brew "libpq"
 brew "libyaml"
 brew "node"
-brew "opensearch", restart_service: :changed
 brew "postgresql@14"
 brew "postgresql@16", restart_service: :changed
 brew "python@3.13"
