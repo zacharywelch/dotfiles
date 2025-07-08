@@ -36,11 +36,29 @@ rm Brewfile.temp
 echo "Linking dotfiles..."
 ln -sf ~/dotfiles/.zshrc ~/.zshrc
 ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
+ln -sf ~/dotfiles/.tool-versions ~/.tool-versions
 
 # Setup colima config
 echo "Setting up colima..."
 mkdir -p ~/.colima/default
 ln -sf ~/dotfiles/colima/colima.yaml ~/.colima/default/colima.yaml
+
+# Setup asdf plugins only if Ruby isn't already installed system-wide
+echo "Setting up asdf..."
+if command -v asdf &>/dev/null; then
+  if ! asdf plugin list | grep -q ruby; then
+    echo "Installing Ruby plugin for asdf..."
+    asdf plugin add ruby
+  fi
+  
+  # Only install Ruby if not already available
+  if ! command -v ruby &>/dev/null || ! ruby --version | grep -q "3.1.6"; then
+    echo "Installing Ruby 3.1.6 via asdf..."
+    asdf install ruby 3.1.6
+  else
+    echo "Ruby already installed, skipping asdf Ruby installation"
+  fi
+fi
 
 # Only start PostgreSQL if port 5432 is free
 if ! lsof -i :5432 &>/dev/null; then
@@ -71,5 +89,4 @@ else
 fi
 
 echo "✅ Setup complete!"
-echo "💡 Don't forget to configure asdf plugins if you use them"
 echo "💡 Import terminal profile from ~/dotfiles/terminal/Default.terminal manually"
