@@ -1,0 +1,12 @@
+[core]
+	autocrlf = false
+	excludesfile = /Users/zacharywelch/.gitignore_global
+[init]
+	defaultBranch = master
+[user]
+	name = Zachary Welch
+	email = zwelch154@gmail.com
+[alias]
+	co = checkout
+[credential]
+	helper = osxkeychain
