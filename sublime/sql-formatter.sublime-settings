@@ -1,0 +1,5 @@
+// Settings in here override those in "sql-formatter/sql-formatter.sublime-settings",
+
+{
+  "indent_size": 8
+}

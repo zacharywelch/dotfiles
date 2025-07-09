@@ -1,0 +1,15 @@
+// Settings in here override those in "Default/Preferences.sublime-settings",
+// and are overridden in turn by syntax-specific settings.
+{
+	"font_size": 13,
+	"tab_size": 2,
+	"ensure_newline_at_eof_on_save": true,
+	"rulers": [80, 100],
+	"trim_trailing_white_space_on_save": "all",
+	"translate_tabs_to_spaces": true,
+	"ignored_packages":
+	[
+		"Vintage",
+	],
+	"index_files": true,
+}
